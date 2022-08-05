@@ -1,0 +1,89 @@
+* {
+    -windows-menubar-hover-color: rgb(25, 144, 223);
+    -windows-control-color: rgba(225, 225, 225);
+    -windows-control-hover-color: rgb(144, 193, 226);
+    -windows-all-border-color: rgb(173, 173, 173);
+
+    -windows-control-border-radius: 2%;
+}
+
+@keyframes hoverColorAnim {
+    from { -fx-background-color: -windows-all-border-color; }
+    to { -fx-background-color: -windows-control-hover-color; }
+}
+
+.menu:showing {
+    -fx-background-color: -windows-menubar-hover-color;
+}
+
+.menu:hover {
+    -fx-background-color: -windows-menubar-hover-color;
+}
+
+.menu-bar {
+    -fx-background-color: white;
+}
+
+.menu-item {
+    -fx-background-color: white;
+}
+
+.menu-item:hover {
+    -fx-background-color: -windows-menubar-hover-color;
+}
+
+.menu-item:focused {
+    -fx-background-color: -windows-menubar-hover-color;
+}
+
+.context-menu {
+    -fx-background-color: white;
+    -fx-border-color: -windows-all-border-color;
+    -fx-background-radius: 1%;
+    -fx-padding: 0%;
+    -fx-effect: none;
+}
+
+.button {
+    -fx-background-color: -windows-control-color;
+    -fx-border-color: -windows-all-border-color;
+    -fx-border-radius: 2%;
+}
+
+.button:hover {
+    -fx-border-color: -windows-menubar-hover-color;
+    -fx-background-color: -windows-control-hover-color;
+}
+
+.button:focused {
+    -fx-border-color: -windows-menubar-hover-color;
+    -fx-background-color: -windows-control-hover-color;
+}
+
+.choice-box {
+    -fx-background-color: -windows-control-color;
+    -fx-border-color: -windows-all-border-color;
+    -fx-border-radius: 0%;
+}
+
+.choice-box:hover {
+    -fx-border-color: -windows-menubar-hover-color;
+    -fx-background-color: -windows-control-hover-color;
+}
+
+.choice-box:focused {
+    -fx-border-color: -windows-menubar-hover-color;
+    -fx-background-color: -windows-control-hover-color;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-body-color: -windows-control-color;
+    -fx-border-color: -windows-all-border-color;
+}
+
+.spinner .increment-arrow-button:hover:pressed,
+.spinner .decrement-arrow-button:hover:pressed {
+    -fx-body-color: -windows-control-hover-color;
+    -fx-border-color: -windows-menubar-hover-color;
+}
