@@ -27,7 +27,7 @@ public class JSONUtil
 	 * 
 	 * @param jsonFile file, containing JSON.
 	 */
-	public JSONUtil(@NotNull final File jsonFile)
+	public JSONUtil(@NotNull File jsonFile)
 	{
 		this.jsonFile = jsonFile;
 		this._filePath = "File \"" + jsonFile.getPath() + "\"";
@@ -131,7 +131,7 @@ public class JSONUtil
 				}
 			}
 
-			if (!isValidateJSON())
+			if (!isValidateJSON(json))
 			{
 				logger.log(Level.ERROR, _badFormat + " File won't be written!");
 
@@ -174,6 +174,29 @@ public class JSONUtil
 			root = new JSONObject(jsonTokener);
 		} catch (JSONException e)
 		{
+			logger.log(Level.ERROR, "Couldn't parse JSON file: \"" + jsonFile.getPath() + "\". Message: " + e.getMessage());
+			return false;
+		}
+
+		logger.log(Level.INFO, root.toString());
+
+		return true;
+	}
+	
+	private boolean isValidateJSON(@NotNull String json)
+	{
+		final JSONTokener jsonTokener;
+
+		jsonTokener = new JSONTokener(json);
+
+		final JSONObject root;
+
+		try
+		{
+			root = new JSONObject(jsonTokener);
+		} catch (JSONException e)
+		{
+			logger.log(Level.ERROR, "Couldn't parse JSON: \"" + json + "\". Message: " + e.getMessage());
 			return false;
 		}
 

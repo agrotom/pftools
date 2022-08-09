@@ -1,5 +1,6 @@
 package com.at.pftools20.logic.props.main;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -9,25 +10,22 @@ import org.apache.log4j.Level;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 public class IntegerProperty extends BaseProperty<Integer>
 {
 	private Range range = Range.DEFAULT_INT;
-
-	private final PropertyStruct propertyStruct;
-
-	private IntegerProperty(String tag, int value)
+	
+	private IntegerProperty(@NotNull String tag, int value)
 	{
 		super(tag);
 
 		setValue(value);
 
-		propertyStruct = new IntegerPropertyStruct();
+		setPropertyStruct(new IntegerPropertyStruct());
 	}
 
+	
 	@Override
-	public void parse(String string)
+	public void parse(@NotNull String string)
 	{
 		try
 		{
@@ -47,25 +45,24 @@ public class IntegerProperty extends BaseProperty<Integer>
 	}
 
 	@Override
-	public void parseJSON(String jsonValue)
+	public void parseJSON(@NotNull String jsonValue)
 	{
 		parse(jsonValue);
 	}
+	
 
 	@Override
-	protected Integer correctValue(Integer newValue)
+	protected Integer correctValue(@NotNull Integer newValue)
 	{
-		if (range == null)
-			return 0;
-
 		if (range.forward(newValue))
 			return newValue;
 		else
 			return range.min;
 	}
 
+	
 	/**
-	 * It is a simple class, that provide Range functional. Range model: [min; max].
+	 * It is a simple class, that provide Range functional. Range model: [minimum; maximum].
 	 */
 	public static class Range
 	{
@@ -102,6 +99,7 @@ public class IntegerProperty extends BaseProperty<Integer>
 		}
 	}
 
+	
 	private class IntegerPropertyStruct implements PropertyStruct
 	{
 
@@ -124,6 +122,7 @@ public class IntegerProperty extends BaseProperty<Integer>
 		{
 			// Root node initialize
 			root.setSpacing(10.0);
+			root.setAlignment(Pos.TOP_CENTER);
 
 			// Label initialize
 			counter.setText(String.valueOf(getValue()));
@@ -141,14 +140,8 @@ public class IntegerProperty extends BaseProperty<Integer>
 			buttonIncrease.setOnMousePressed(this::onButtonIncrease);
 		}
 
-		private void onButtonIncrease(final MouseEvent event)
+		private void onButtonIncrease(@NotNull MouseEvent event)
 		{
-			if (event == null)
-			{
-				logger.log(Level.INFO, "Event is null!");
-				return;
-			}
-
 			int increaseValue = 1;
 			final int lastValue = getValue();
 
@@ -168,14 +161,8 @@ public class IntegerProperty extends BaseProperty<Integer>
 			counter.setText(String.valueOf(getValue()));
 		}
 
-		private void onButtonDecrease(final MouseEvent event)
+		private void onButtonDecrease(@NotNull MouseEvent event)
 		{
-			if (event == null)
-			{
-				logger.log(Level.INFO, "Event is null!");
-				return;
-			}
-
 			int increaseValue = 1;
 			final int lastValue = getValue();
 
@@ -195,14 +182,8 @@ public class IntegerProperty extends BaseProperty<Integer>
 			counter.setText(String.valueOf(getValue()));
 		}
 
-		private void onDragCounter(final MouseEvent event)
+		private void onDragCounter(MouseEvent event)
 		{
-			if (event == null)
-			{
-				logger.log(Level.INFO, "Event is null!");
-				return;
-			}
-
 			int bias = Math.abs((int) (event.getY() / 3));
 			int result = (int) (getValue() - event.getY() * bias);
 
@@ -223,12 +204,7 @@ public class IntegerProperty extends BaseProperty<Integer>
 		}
 	}
 
-	@Override
-	public PropertyStruct getPropertyStruct()
-	{
-		return propertyStruct;
-	}
-
+	
 	public class IntegerPropBuilder extends BaseProperty<Integer>.Builder<IntegerPropBuilder, IntegerProperty>
 	{
 		@Override
@@ -243,18 +219,15 @@ public class IntegerProperty extends BaseProperty<Integer>
 			return IntegerProperty.this;
 		}
 
-		public IntegerPropBuilder setRange(Range newRange)
+		public IntegerPropBuilder setRange(@NotNull Range newRange)
 		{
-			if (newRange == null)
-				logger.log(Level.WARN, "New range is null!");
-
-			range = Objects.requireNonNullElse(newRange, Range.DEFAULT_INT);
+			range = newRange;
 			return this;
 		}
 	}
 
 	@Contract("_, _ -> new")
-	public static @NotNull IntegerProperty.IntegerPropBuilder newBuilder(String tag, int value)
+	public static @NotNull IntegerProperty.IntegerPropBuilder newBuilder(@NotNull String tag, int value)
 	{
 		return new IntegerProperty(tag, value).new IntegerPropBuilder();
 	}

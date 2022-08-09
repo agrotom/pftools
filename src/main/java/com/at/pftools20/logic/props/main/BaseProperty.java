@@ -1,11 +1,12 @@
 package com.at.pftools20.logic.props.main;
 
 import javafx.scene.layout.Region;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
+import com.at.pftools20.logic.props.main.BaseProperty.PropertyStruct;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * BaseProperty contains base for other properties. If any class inherits from
@@ -17,18 +18,21 @@ import java.util.Objects;
  * 
  * @see com.at.pftools20.util.json.JSONAble
  */
-public abstract class BaseProperty<T>
+public abstract non-sealed class BaseProperty<T> implements ImmutableProperty<T>
 {
 	private final String tag;
 	private T value;
 
 	private String description = "";
+	
+	private PropertyStruct propertyStruct;
 
-	protected BaseProperty(String tag)
+	protected BaseProperty(@NotNull String tag)
 	{
-		this.tag = Objects.requireNonNullElse(tag, "null");
+		this.tag = tag;
 	}
 
+	
 	/**
 	 * Generic must correctly implement toString method. If generic type has
 	 * specific stringify method, this method should be overridden.
@@ -47,7 +51,7 @@ public abstract class BaseProperty<T>
 	 * 
 	 * @param string String to parse.
 	 */
-	public abstract void parse(String string);
+	public abstract void parse(@NotNull String string);
 
 	/**
 	 * Converts JSON value to property value. Most of primitive properties, like
@@ -55,7 +59,7 @@ public abstract class BaseProperty<T>
 	 * 
 	 * @param jsonValue JSON value.
 	 */
-	public abstract void parseJSON(String jsonValue);
+	public abstract void parseJSON(@NotNull String jsonValue);
 
 	/**
 	 * Converts property to JSON format. Most of primitive properties, like Integer,
@@ -63,30 +67,45 @@ public abstract class BaseProperty<T>
 	 * 
 	 * @return JSON as string.
 	 */
+	@Override
 	public abstract String toJSON();
+
+	
+	public final void setValue(@NotNull T newValue)
+	{
+		value = correctValue(newValue);
+	}
 
 	public final String getTag()
 	{
 		return tag;
 	}
-
-	public final void setValue(T newValue)
+	
+	public final String getFormattedTag()
 	{
-		value = correctValue(newValue);
+		return tag;
 	}
-
+	
+	@Override
 	public final T getValue()
 	{
 		return value;
 	}
+	
+	public final String getDescription()
+	{
+		return description;
+	}
 
-	protected abstract T correctValue(T newValue);
-
+	protected abstract T correctValue(@NotNull T newValue);
+	
+	
+	protected final void setPropertyStruct(@NotNull PropertyStruct propertyStruct) { this.propertyStruct = propertyStruct; }
 	/**
 	 *
 	 * @return PropertyStruct of this property.
 	 */
-	public abstract PropertyStruct getPropertyStruct();
+	public final PropertyStruct getPropertyStruct() { return propertyStruct; }
 
 	/**
 	 * PropertyStruct contains control node of this property. Example: see
@@ -97,6 +116,7 @@ public abstract class BaseProperty<T>
 		Region getMainNode();
 	}
 
+	
 	/**
 	 * Builder with inheritance behavior.
 	 * 
@@ -105,22 +125,17 @@ public abstract class BaseProperty<T>
 	 */
 	protected abstract class Builder<S extends Builder<S, K>, K extends BaseProperty<T>>
 	{
-		public final S register(List<BaseProperty<?>> registerList)
+		public final S register(@NotNull List<BaseProperty<?>> registerList)
 		{
-			if (registerList == null)
-				logger.log(Level.WARN, "Register list argument is null!");
-			else
-				registerList.add(BaseProperty.this);
+			registerList.add(BaseProperty.this);
 
 			return getThis();
 		}
 
-		public final S setDescription(String newDescription)
+		public final S setDescription(@NotNull String newDescription)
 		{
-			if (newDescription == null)
-				logger.log(Level.WARN, "New description is null!");
-
-			description = Objects.requireNonNullElse(description, "");
+			description = newDescription;
+			
 			return getThis();
 		}
 

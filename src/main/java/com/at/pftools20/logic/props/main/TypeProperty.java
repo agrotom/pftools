@@ -5,27 +5,26 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.Region;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
 public class TypeProperty extends BaseProperty<String>
 {
 	private final List<String> availableTypes;
 
-	private final PropertyStruct propertyStruct;
-
-	private TypeProperty(String tag, String value, List<String> availableTypes)
+	
+	private TypeProperty(@NotNull String tag, @NotNull String value, @NotNull List<String> availableTypes)
 	{
 		super(tag);
 
-		this.availableTypes = Objects.requireNonNullElse(availableTypes, new ArrayList<>());
+		this.availableTypes = availableTypes;
 
 		setValue(value);
 
-		propertyStruct = new TypePropertyStruct();
+		setPropertyStruct(new TypePropertyStruct());
 	}
 
+	
 	/**
 	 * Parses value from string. If string is not parsable, inherit class method
 	 * will set property value to base value of its generic type.
@@ -33,7 +32,7 @@ public class TypeProperty extends BaseProperty<String>
 	 * @param newValue String to parse.
 	 */
 	@Override
-	public void parse(String newValue)
+	public void parse(@NotNull String newValue)
 	{
 		setValue(newValue);
 	}
@@ -57,15 +56,16 @@ public class TypeProperty extends BaseProperty<String>
 	 * @param jsonValue JSON value.
 	 */
 	@Override
-	public void parseJSON(String jsonValue)
+	public void parseJSON(@NotNull String jsonValue)
 	{
 		parse(jsonValue);
 	}
 
+	
 	@Override
-	protected String correctValue(String newValue)
+	protected String correctValue(@NotNull String newValue)
 	{
-		if (newValue == null || !availableTypes.contains(newValue))
+		if (!availableTypes.contains(newValue))
 		{
 			if (!availableTypes.isEmpty())
 				return availableTypes.get(0);
@@ -76,6 +76,7 @@ public class TypeProperty extends BaseProperty<String>
 		return newValue;
 	}
 
+	
 	private class TypePropertyStruct implements PropertyStruct
 	{
 		private final ChoiceBox<String> choiceBox = new ChoiceBox<>(FXCollections.observableList(availableTypes));
@@ -98,34 +99,31 @@ public class TypeProperty extends BaseProperty<String>
 			return choiceBox;
 		}
 
-		private void applyChanges(ActionEvent event)
+		private void applyChanges(@NotNull ActionEvent event)
 		{
 			setValue(choiceBox.getValue());
 		}
 	}
 
-	/**
-	 * @return PropertyStruct of this property.
-	 */
-	@Override
-	public PropertyStruct getPropertyStruct()
-	{
-		return propertyStruct;
-	}
-
+	
 	public class TypePropBuilder extends BaseProperty<String>.Builder<TypePropBuilder, TypeProperty>
 	{
 
 		@Override
 		protected TypePropBuilder getThis()
 		{
-			return null;
+			return this;
 		}
 
 		@Override
 		public TypeProperty build()
 		{
-			return null;
+			return TypeProperty.this;
 		}
+	}
+
+	public static TypePropBuilder newBuilder(@NotNull String tag, @NotNull String value, @NotNull List<String> availableTypes)
+	{
+		return new TypeProperty(tag, value, availableTypes).new TypePropBuilder();
 	}
 }

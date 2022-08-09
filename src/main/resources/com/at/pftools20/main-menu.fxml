@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -24,7 +22,7 @@
                   <MenuItem fx:id="openMenuItem" mnemonicParsing="false" text="Open" />
                   <MenuItem fx:id="openRecentlyMenuItem" mnemonicParsing="false" text="Open Recently" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" text="Save" />
+                  <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveAction" text="Save" />
                   <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" text="Save As..." />
                   <SeparatorMenuItem mnemonicParsing="false" />
               <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" text="Close" />
@@ -38,7 +36,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Options">
               <items>
-                <MenuItem mnemonicParsing="false" text="Open Settings" />
+                <MenuItem mnemonicParsing="false" onAction="#onSettingsAction" text="Open Settings" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
@@ -56,11 +54,14 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ListView layoutX="3.0" layoutY="3.0" prefHeight="175.0" prefWidth="319.0" />
-                        <ChoiceBox layoutX="23.0" layoutY="25.0" prefWidth="150.0" />
-                        <Button layoutX="23.0" layoutY="66.0" mnemonicParsing="false" text="Button" />
-                        <TextField layoutX="24.0" layoutY="110.0" />
+                        <VBox fx:id="allPropsPane" layoutX="-2.0" layoutY="-1.0" prefHeight="182.0" prefWidth="327.0" spacing="5.0">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding></VBox>
                      </children>
+                     <padding>
+                        <Insets top="5.0" />
+                     </padding>
                   </AnchorPane>
               </content>
             </TitledPane>
@@ -68,7 +69,8 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Label fx:id="cardInfoLabel" alignment="TOP_LEFT" layoutX="14.0" layoutY="14.0" prefHeight="156.0" prefWidth="299.0" text="No info" />
+                        <Label fx:id="cardInfoLabel" alignment="TOP_LEFT" layoutX="13.0" layoutY="6.0" prefHeight="156.0" prefWidth="299.0" text="No info" />
+                        <Button layoutX="14.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="88.0" text="Button" />
                      </children>
                   </AnchorPane>
               </content>
@@ -83,7 +85,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="312.0" prefWidth="299.0">
                      <children>
-                        <VBox fx:id="propertyDataVBox" layoutX="1.0" layoutY="1.0" prefHeight="310.0" prefWidth="297.0" />
+                        <VBox fx:id="propertyDataVBox" alignment="TOP_CENTER" layoutX="1.0" layoutY="1.0" prefHeight="310.0" prefWidth="297.0" />
                      </children>
                   </AnchorPane>
               </content>

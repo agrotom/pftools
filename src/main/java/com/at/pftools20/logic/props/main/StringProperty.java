@@ -6,10 +6,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import java.util.function.UnaryOperator;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,19 +18,19 @@ public class StringProperty extends BaseProperty<String>
 {
 	private int maxLength = -1;
 
-	private final PropertyStruct propertyStruct;
-
-	private StringProperty(String tag, String value)
+	
+	private StringProperty(@NotNull String tag, @NotNull String value)
 	{
 		super(tag);
 
 		setValue(value);
 
-		propertyStruct = new StringPropertyStruct();
+		setPropertyStruct(new StringPropertyStruct());
 	}
 
+	
 	@Override
-	public void parse(String string)
+	public void parse(@NotNull String string)
 	{
 		setValue(string);
 	}
@@ -41,29 +42,25 @@ public class StringProperty extends BaseProperty<String>
 	}
 
 	@Override
-	public void parseJSON(String jsonValue)
+	public void parseJSON(@NotNull String jsonValue)
 	{
 		parse(jsonValue);
 	}
 
+	
 	/**
 	 * @return corrected string. Returns empty string if new value equals null
 	 */
 	@Override
 	protected String correctValue(String newValue)
 	{
-		if (newValue == null)
-		{
-			logger.log(Level.WARN, "String argument is null! Value will be set to empty string!");
-			return "";
-		}
-
 		if (maxLength > 0 && newValue.length() > maxLength)
 			return newValue.substring(0, maxLength - 1);
 
 		return newValue;
 	}
 
+	
 	private class StringPropertyStruct implements PropertyStruct
 	{
 		private final TextField textField = new TextField(getValue());
@@ -97,10 +94,9 @@ public class StringProperty extends BaseProperty<String>
 		}
 
 		@Contract(" -> new")
-		private @NotNull TextFormatter<TextFormatter.Change> newTextFormatter()
+		private @NotNull TextFormatter<String> newTextFormatter()
 		{
-			return new TextFormatter<>(change ->
-			{
+			return new TextFormatter<String>((UnaryOperator<Change>)(change -> {
 				final String newText = change.getControlNewText();
 
 				if (!change.isDeleted() && maxLength > 0 && newText.length() > maxLength)
@@ -108,7 +104,7 @@ public class StringProperty extends BaseProperty<String>
 
 				StringProperty.this.setValue(newText);
 				return change;
-			});
+			}));
 		}
 
 		private void expandTextField(ActionEvent event)
@@ -130,12 +126,7 @@ public class StringProperty extends BaseProperty<String>
 		}
 	}
 
-	@Override
-	public PropertyStruct getPropertyStruct()
-	{
-		return propertyStruct;
-	}
-
+	
 	public class StringPropBuilder extends BaseProperty<String>.Builder<StringPropBuilder, StringProperty>
 	{
 
@@ -159,10 +150,8 @@ public class StringProperty extends BaseProperty<String>
 	}
 
 	@Contract("_, _ -> new")
-	public static @NotNull StringPropBuilder newBuilder(String tag, String value)
+	public static @NotNull StringPropBuilder newBuilder(@NotNull String tag, @NotNull String value)
 	{
 		return new StringProperty(tag, value).new StringPropBuilder();
 	}
-
-	private final Logger logger = Logger.getLogger(StringProperty.class);
 }

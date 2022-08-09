@@ -7,6 +7,7 @@ import com.at.pftools20.util.json.JSONUtil;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -18,17 +19,11 @@ import org.json.JSONTokener;
 public abstract class StatCard {
     protected final List<BaseProperty<?>> properties = new LinkedList<>();
 
-    public final StringProperty name = StringProperty.newBuilder("name", "No Info").register(properties).build();
-    public final StringProperty description = StringProperty.newBuilder("description", "No Info").register(properties).build();
+    public final StringProperty name = StringProperty.newBuilder("name", "No Info").setDescription("Name of card").register(properties).build();
+    public final StringProperty description = StringProperty.newBuilder("description", "No Info").setDescription("Description of card").register(properties).build();
     
-    public final boolean loadFromFile(File file)
+    public final boolean loadCardFromFile(@NotNull File file)
     {
-    	if(file == null)
-    	{
-    		logger.log(Level.WARN, "File argument is null!");
-    		return false;
-    	}
-    	
     	final JSONUtil jsonUtil = new JSONUtil(file);
     	
     	final String json = jsonUtil.read();
@@ -112,6 +107,15 @@ public abstract class StatCard {
     	root.put("type", cardType.toString());
     	
     	return root.toString();
+    }
+    
+    /**
+     * 
+     * @return copy of properties list, because properties list is immutable!
+     */
+    public List<BaseProperty<?>> copyOfProps()
+    {
+    	return new LinkedList<>(properties);
     }
     
     public abstract CardType getType();

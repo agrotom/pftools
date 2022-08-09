@@ -1,6 +1,7 @@
 package com.at.pftools20.logic.props.main;
 
 import com.at.pftools20.logic.enums.Dice;
+
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ChoiceBox;
@@ -18,23 +19,26 @@ import java.util.List;
 
 public class DiceProperty extends BaseProperty<DiceProperty.DiceMultiplier>
 {
-	private DiceProperty(String tag, Dice dice, int multiplier)
+	private DiceProperty(@NotNull String tag, @NotNull Dice dice, int multiplier)
 	{
 		super(tag);
 
 		final DiceMultiplier value = new DiceMultiplier(dice, multiplier);
 
 		setValue(value);
+		
+		setPropertyStruct(new DicePropertyStruct());
 	}
 
+	
 	/**
-	 * Parses value from string. If string is not parsable, inherit class method
+	 * Parses value from string. If string can't be parsed, inherit class method
 	 * will set property value to base value of its generic type.
 	 *
 	 * @param string String to parse.
 	 */
 	@Override
-	public void parse(String string)
+	public void parse(@NotNull String string)
 	{
 		getValue().parse(string);
 	}
@@ -58,26 +62,19 @@ public class DiceProperty extends BaseProperty<DiceProperty.DiceMultiplier>
 	 * @param jsonValue JSON value.
 	 */
 	@Override
-	public void parseJSON(String jsonValue)
+	public void parseJSON(@NotNull String jsonValue)
 	{
 		parse(jsonValue);
 	}
 
+	
 	@Override
-	protected DiceMultiplier correctValue(DiceProperty.DiceMultiplier newValue)
+	protected DiceMultiplier correctValue(@NotNull DiceProperty.DiceMultiplier newValue)
 	{
 		return newValue;
 	}
 
-	/**
-	 * @return PropertyStruct of this property.
-	 */
-	@Override
-	public PropertyStruct getPropertyStruct()
-	{
-		return new DicePropertyStruct();
-	}
-
+	
 	private class DicePropertyStruct implements PropertyStruct
 	{
 		private final Spinner<Integer> spinner = new Spinner<>(1, Integer.MAX_VALUE, 1);
@@ -108,12 +105,12 @@ public class DiceProperty extends BaseProperty<DiceProperty.DiceMultiplier>
 			choiceBox.setOnAction(this::onDiceChanged);
 		}
 
-		private void onSpinnerChanged(MouseEvent event)
+		private void onSpinnerChanged(@NotNull MouseEvent event)
 		{
 			DiceProperty.this.getValue().multiplier = spinner.getValue();
 		}
 
-		private void onDiceChanged(ActionEvent event)
+		private void onDiceChanged(@NotNull ActionEvent event)
 		{
 			DiceProperty.this.getValue().dice = choiceBox.getValue();
 		}
@@ -124,6 +121,7 @@ public class DiceProperty extends BaseProperty<DiceProperty.DiceMultiplier>
 			return root;
 		}
 	}
+
 
 	public class DicePropBuilder extends Builder<DicePropBuilder, DiceProperty>
 	{
@@ -142,7 +140,7 @@ public class DiceProperty extends BaseProperty<DiceProperty.DiceMultiplier>
 	}
 
 	@Contract("_, _, _ -> new")
-	public static @NotNull DicePropBuilder newBuilder(String tag, Dice dice, int multiplier)
+	public static @NotNull DicePropBuilder newBuilder(@NotNull String tag, @NotNull Dice dice, int multiplier)
 	{
 		return new DiceProperty(tag, dice, multiplier).new DicePropBuilder();
 	}
@@ -152,17 +150,17 @@ public class DiceProperty extends BaseProperty<DiceProperty.DiceMultiplier>
 		private Dice dice;
 		private int multiplier;
 
-		public DiceMultiplier(Dice dice, int multiplier)
+		public DiceMultiplier(@NotNull Dice dice, int multiplier)
 		{
 			this.dice = dice != null ? dice : Dice.NONE;
 			this.multiplier = multiplier > 0 ? multiplier : 1;
 		}
 
-		public void parse(String string)
+		public void parse(@NotNull String string)
 		{
-			if (string == null || string.isEmpty())
+			if (string.isEmpty())
 			{
-				logger.log(Level.ERROR, "String is null or empty!");
+				logger.log(Level.WARN, "String is empty! String won't be parsed!");
 				return;
 			}
 
@@ -170,7 +168,7 @@ public class DiceProperty extends BaseProperty<DiceProperty.DiceMultiplier>
 
 			if (construct.length != 2)
 			{
-				logger.log(Level.ERROR, "Bad format \"MULTIPLIER:DICE\"!");
+				logger.log(Level.WARN, "Bad format \"MULTIPLIER:DICE\"!");
 				return;
 			}
 
@@ -181,7 +179,7 @@ public class DiceProperty extends BaseProperty<DiceProperty.DiceMultiplier>
 				rawDice = Dice.valueOf(construct[0]);
 			} catch (IllegalArgumentException e)
 			{
-				logger.log(Level.ERROR, "It seems, that string contains bad enumeration!");
+				logger.log(Level.WARN, "It seems, that string contains bad enumeration!");
 				return;
 			}
 
@@ -192,7 +190,7 @@ public class DiceProperty extends BaseProperty<DiceProperty.DiceMultiplier>
 				rawMultiplier = Integer.parseInt(construct[1]);
 			} catch (NumberFormatException e)
 			{
-				logger.log(Level.ERROR, "It seems, that string contains no number!");
+				logger.log(Level.WARN, "It seems, that string contains no number!");
 				return;
 			}
 

@@ -6,5 +6,6 @@ public enum CardType {
 	WEAPON,
 	ARMOR,
 	SPELL,
-	HERO
+	HERO,
+	GIGLET
 }

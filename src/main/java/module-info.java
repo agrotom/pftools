@@ -14,7 +14,12 @@ module com.at.pftools20 {
     requires log4j;
     requires org.jetbrains.annotations;
 	requires javafx.base;
-
+	requires javafx.graphics;
+	
     opens com.at.pftools20 to javafx.fxml;
     exports com.at.pftools20;
+    
+    exports com.at.pftools20.logic.enums to com.at.pftools20;
+    exports com.at.pftools20.logic.statcard.main to com.at.pftools20;
+    exports com.at.pftools20.logic.props.main to com.at.pftools20.statcard.main;
 }
