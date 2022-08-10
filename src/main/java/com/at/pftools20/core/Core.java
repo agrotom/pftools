@@ -8,8 +8,11 @@ import java.nio.file.Path;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
+import com.at.pftools20.HelloApplication;
 import com.at.pftools20.core.preferences.Preferences;
+import com.at.pftools20.util.TranslatableText;
 import com.at.pftools20.util.json.JSONUtil;
 
 import javafx.stage.Stage;
@@ -52,20 +55,24 @@ public final class Core
 		prefCtrl = new PreferenceController();
 	}
 	
+	
 	public Stage getMainStage()
 	{
 		return mainStage;
 	}
+	
 	
 	public Preferences getPreferences()
 	{
 		return prefCtrl.preferences;
 	}
 	
+	
 	public void saveCoreData()
 	{
 		prefCtrl.save();
 	}
+	
 	
 	private class PreferenceController
 	{

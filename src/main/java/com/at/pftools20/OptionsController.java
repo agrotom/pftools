@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 
 import com.at.pftools20.logic.props.main.BaseProperty;
+import com.at.pftools20.util.TranslatableText;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -68,7 +69,7 @@ public class OptionsController
 		final FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("options.fxml"));
 		final Scene scene = new Scene(fxmlLoader.load(), 600, 400);
 		
-		stage.setTitle("Settings");
+		stage.setTitle(TranslatableText.formatString("settings.title"));
 		stage.setScene(scene);
 		
 		stage.initModality(Modality.APPLICATION_MODAL);

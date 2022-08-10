@@ -4,7 +4,7 @@ import javafx.scene.layout.Region;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import com.at.pftools20.logic.props.main.BaseProperty.PropertyStruct;
+import com.at.pftools20.util.TranslatableText;
 
 import java.util.List;
 
@@ -23,6 +23,7 @@ public abstract non-sealed class BaseProperty<T> implements ImmutableProperty<T>
 	private final String tag;
 	private T value;
 
+	private String tagNameFormatID;
 	private String description = "";
 	
 	private PropertyStruct propertyStruct;
@@ -30,6 +31,7 @@ public abstract non-sealed class BaseProperty<T> implements ImmutableProperty<T>
 	protected BaseProperty(@NotNull String tag)
 	{
 		this.tag = tag;
+		tagNameFormatID = "property." + tag;
 	}
 
 	
@@ -83,7 +85,7 @@ public abstract non-sealed class BaseProperty<T> implements ImmutableProperty<T>
 	
 	public final String getFormattedTag()
 	{
-		return tag;
+		return TranslatableText.formatString(tagNameFormatID);
 	}
 	
 	@Override
@@ -113,6 +115,7 @@ public abstract non-sealed class BaseProperty<T> implements ImmutableProperty<T>
 	 */
 	public interface PropertyStruct
 	{
+		@SuppressWarnings("exports")
 		Region getMainNode();
 	}
 
@@ -135,6 +138,17 @@ public abstract non-sealed class BaseProperty<T> implements ImmutableProperty<T>
 		public final S setDescription(@NotNull String newDescription)
 		{
 			description = newDescription;
+			
+			return getThis();
+		}
+		
+		/**
+		 * Default format is "property.[PROPERTY_TAG]". The method changes it to desired id.
+		 * @param formatID Unlocalized string.
+		 */
+		public final S setCustomTagFormatID(@NotNull String formatID)
+		{
+			tagNameFormatID = formatID;
 			
 			return getThis();
 		}

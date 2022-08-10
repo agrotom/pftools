@@ -14,6 +14,12 @@ import com.at.pftools20.util.json.JSONUtil;
 
 public class TranslatableText
 {
+	private static final Logger logger = Logger.getLogger(TranslatableText.class);
+	
+	private static final JSONObject defaultLangJSON = getLangJSON("/lang/en.json");
+	private static final JSONObject langJSON = getLangJSON("/lang/"
+			+ HelloApplication.getAppCore().getPreferences().language.toString() + ".json");
+	
 	/**
 	 * 
 	 * @param rawString Unlocalized string.
@@ -22,14 +28,51 @@ public class TranslatableText
 	 */
 	public static String formatString(@NotNull String rawString)
 	{
+		String formattedText = null;
+		
+		if(langJSON != null)
+		{
+			try
+			{
+				formattedText = langJSON.getString(rawString);
+			} catch (Exception e)
+			{
+				logger.log(Level.WARN, "There is no localization for: \"" + rawString + "\" in \""
+						+ HelloApplication.getAppCore().getPreferences().language.toString() + ".json\" language file! "
+						+ "Try to find it in default language file!");
+			}
+			
+			
+			if(formattedText == null && defaultLangJSON != null)
+			{
+				try
+				{
+					formattedText = defaultLangJSON.getString(rawString);
+				} catch (Exception e)
+				{
+					logger.log(Level.WARN, "There is no localization for: \"" + rawString + "\" in "
+							+ "default language file! Return unlocalized string!");
+				}
+				
+				if(formattedText == null)
+					formattedText = rawString;
+			}
+		}
+		
+		return formattedText;
+	}
+	
+
+	private static JSONObject getLangJSON(@NotNull String resourcePath)
+	{
 		final String langRawFilePath = "/lang/"
 				+ HelloApplication.getAppCore().getPreferences().language.toString() + ".json";
-		final URL langFile = TranslatableText.class.getResource(langRawFilePath);
+		final URL langFile = TranslatableText.class.getResource(resourcePath);
 		
 		if(langFile == null)
 		{
-			logger.log(Level.ERROR, "Resource \"" + langRawFilePath + "\" not found!");
-			return rawString;
+			logger.log(Level.ERROR, "Resource \"" + langRawFilePath + "\" not found! Set language string to empty!");
+			return null;
 		}
 		
 		final String langFilePath = langFile.getPath();
@@ -40,17 +83,10 @@ public class TranslatableText
 		
 		if(rawJSON.isEmpty())
 		{
-			logger.log(Level.ERROR, "JSON is empty! Check syntax!");
-			return rawString;
+			logger.log(Level.ERROR, "JSON is empty! Check syntax! Set language string to empty!");
+			return null;
 		}
 		
-		final JSONTokener jsonTokener = new JSONTokener(rawJSON);
-		final JSONObject root = new JSONObject(jsonTokener);
-		
-		
-		
-		return rawJSON;
+		return new JSONObject(new JSONTokener(rawJSON));
 	}
-	
-	private static final Logger logger = Logger.getLogger(TranslatableText.class);
 }
