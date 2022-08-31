@@ -24,8 +24,6 @@ public class StringProperty extends BaseProperty<String>
 		super(tag);
 
 		setValue(value);
-
-		setPropertyStruct(new StringPropertyStruct());
 	}
 
 	
@@ -59,6 +57,13 @@ public class StringProperty extends BaseProperty<String>
 
 		return newValue;
 	}
+	
+	
+	@Override
+	public PropertyStruct getPropertyStruct()
+	{
+		return new StringPropertyStruct();
+	}
 
 	
 	private class StringPropertyStruct implements PropertyStruct
@@ -88,6 +93,7 @@ public class StringProperty extends BaseProperty<String>
 
 			// Expanded TextField (TextArea) initialize
 			expandedTextField.setTextFormatter(newTextFormatter());
+			expandedTextField.setWrapText(true);
 
 			// Expand button
 			expandButton.setOnAction(this::expandTextField);

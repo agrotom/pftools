@@ -8,7 +8,7 @@ public class Item extends StatCard
 {
 	public final IntegerProperty price = IntegerProperty.newBuilder("price", 1).setRange(Range.UNSIGNED_INT_ZERO)
 			.register(properties).build();
-
+	
 	@Override
 	public CardType getType() { return CardType.ITEM; }
 	

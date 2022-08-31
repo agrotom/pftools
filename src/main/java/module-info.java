@@ -1,4 +1,5 @@
-module com.at.pftools20 {
+module com.at.pftools20
+{
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -15,6 +16,7 @@ module com.at.pftools20 {
     requires org.jetbrains.annotations;
 	requires javafx.base;
 	requires javafx.graphics;
+	requires jakarta.xml.bind;
 	
     opens com.at.pftools20 to javafx.fxml;
     exports com.at.pftools20;
@@ -22,4 +24,6 @@ module com.at.pftools20 {
     exports com.at.pftools20.logic.enums to com.at.pftools20;
     exports com.at.pftools20.logic.statcard.main to com.at.pftools20;
     exports com.at.pftools20.logic.props.main to com.at.pftools20.statcard.main;
+    
+    opens com.at.pftools20.logic.props.main;
 }

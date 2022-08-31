@@ -1,12 +1,14 @@
 package com.at.pftools20.logic.props.main;
 
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.Region;
 
+import java.util.LinkedList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+
+import com.at.pftools20.util.TranslatableText;
 
 public class TypeProperty extends BaseProperty<String>
 {
@@ -20,8 +22,6 @@ public class TypeProperty extends BaseProperty<String>
 		this.availableTypes = availableTypes;
 
 		setValue(value);
-
-		setPropertyStruct(new TypePropertyStruct());
 	}
 
 	
@@ -77,9 +77,16 @@ public class TypeProperty extends BaseProperty<String>
 	}
 
 	
+	@Override
+	public PropertyStruct getPropertyStruct()
+	{
+		return new TypePropertyStruct();
+	}
+	
+	
 	private class TypePropertyStruct implements PropertyStruct
 	{
-		private final ChoiceBox<String> choiceBox = new ChoiceBox<>(FXCollections.observableList(availableTypes));
+		private final ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
 		private TypePropertyStruct()
 		{
@@ -89,7 +96,13 @@ public class TypeProperty extends BaseProperty<String>
 		private void init()
 		{
 			// ChoiceBox initialize
-			choiceBox.setValue(getValue());
+			final List<String> formattedTypes = new LinkedList<>();
+			
+			availableTypes.forEach(type -> formattedTypes.add(TranslatableText.formatString(getTagNameID() + "." + type)));
+			
+			choiceBox.getItems().setAll(formattedTypes);
+			
+			choiceBox.setValue(formattedTypes.get(availableTypes.indexOf(getValue())));
 			choiceBox.setOnAction(this::applyChanges);
 		}
 
@@ -101,7 +114,7 @@ public class TypeProperty extends BaseProperty<String>
 
 		private void applyChanges(@NotNull ActionEvent event)
 		{
-			setValue(choiceBox.getValue());
+			setValue(availableTypes.get(choiceBox.getSelectionModel().getSelectedIndex()));
 		}
 	}
 

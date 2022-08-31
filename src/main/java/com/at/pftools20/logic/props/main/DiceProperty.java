@@ -1,7 +1,6 @@
 package com.at.pftools20.logic.props.main;
 
 import com.at.pftools20.logic.enums.Dice;
-
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ChoiceBox;
@@ -26,8 +25,6 @@ public class DiceProperty extends BaseProperty<DiceProperty.DiceMultiplier>
 		final DiceMultiplier value = new DiceMultiplier(dice, multiplier);
 
 		setValue(value);
-		
-		setPropertyStruct(new DicePropertyStruct());
 	}
 
 	
@@ -74,6 +71,12 @@ public class DiceProperty extends BaseProperty<DiceProperty.DiceMultiplier>
 		return newValue;
 	}
 
+	
+	@Override
+	public PropertyStruct getPropertyStruct()
+	{
+		return new DicePropertyStruct();
+	}
 	
 	private class DicePropertyStruct implements PropertyStruct
 	{

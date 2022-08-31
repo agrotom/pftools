@@ -4,16 +4,13 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.at.pftools20.logic.props.main.BaseProperty;
 import com.at.pftools20.util.TranslatableText;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -36,7 +33,10 @@ public class OptionsController
 	private void initialize()
 	{
 		HelloApplication.getAppCore().getPreferences().getNewList().forEach(pref -> {
-			final HBox row = new HBox(new Label(pref.getFormattedTag()));
+			final Label label = new Label(pref.getFormattedTag());
+			
+			final HBox row = new HBox(label);
+			HBox.setMargin(label, new Insets(5.0));
 
 			row.setOnMouseClicked(event -> {
 				final Text name = new Text(pref.getFormattedTag());
@@ -71,6 +71,7 @@ public class OptionsController
 		
 		stage.setTitle(TranslatableText.formatString("settings.title"));
 		stage.setScene(scene);
+		stage.getIcons().setAll(primaryStage.getIcons());
 		
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.initOwner(primaryStage.getOwner());

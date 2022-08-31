@@ -1,16 +1,18 @@
 package com.at.pftools20.util;
 
-import java.io.File;
-import java.net.URL;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import com.at.pftools20.HelloApplication;
-import com.at.pftools20.util.json.JSONUtil;
 
 public class TranslatableText
 {
@@ -65,7 +67,7 @@ public class TranslatableText
 
 	private static JSONObject getLangJSON(@NotNull String resourcePath)
 	{
-		final String langRawFilePath = "/lang/"
+		/*final String langRawFilePath = "/lang/"
 				+ HelloApplication.getAppCore().getPreferences().language.toString() + ".json";
 		final URL langFile = TranslatableText.class.getResource(resourcePath);
 		
@@ -73,9 +75,17 @@ public class TranslatableText
 		{
 			logger.log(Level.ERROR, "Resource \"" + langRawFilePath + "\" not found! Set language string to empty!");
 			return null;
-		}
+		}*/
 		
-		final String langFilePath = langFile.getPath();
+		/*final String langFilePath = /*langFile.getPath(); Helper.getResourcePath(resourcePath);
+		
+		logger.log(Level.INFO, langFilePath);
+	
+		if(langFilePath.isEmpty())
+		{
+			logger.log(Level.ERROR, "Resource \"" + resourcePath + "\" not found! Set language string to empty!");
+			return null;
+		}
 		
 		final JSONUtil jsonUtil = new JSONUtil(new File(langFilePath));
 		
@@ -87,6 +97,37 @@ public class TranslatableText
 			return null;
 		}
 		
-		return new JSONObject(new JSONTokener(rawJSON));
+		return new JSONObject(new JSONTokener(rawJSON));*/
+		
+		final InputStream langFileStream = Helper.getResourceAsStream(resourcePath);
+		
+		if(langFileStream == null)
+		{
+			logger.log(Level.ERROR, "Resource \"" + resourcePath + "\" not found! Set language string to empty!");
+			return null;
+		}
+		
+		final JSONTokener jsonTokener = new JSONTokener(new InputStreamReader(langFileStream, StandardCharsets.UTF_8));
+		
+		JSONObject root = null;
+		
+		try
+		{
+			root = new JSONObject(jsonTokener);
+		} catch (JSONException e)
+		{
+			logger.log(Level.ERROR, "Check syntax! Set language string to empty!");
+			return null;
+		}
+		
+		try
+		{
+			langFileStream.close();
+		} catch (IOException e)
+		{
+			logger.log(Level.ERROR, "Can't close input stream!");
+		}
+		
+		return root;
 	}
 }

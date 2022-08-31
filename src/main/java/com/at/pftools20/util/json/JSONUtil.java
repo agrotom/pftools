@@ -143,7 +143,7 @@ public class JSONUtil
 			try
 			{
 				writer.write(json);
-				logger.log(Level.INFO, _filePath + " was written successfully!\nIts content is: \n" + json);
+				logger.log(Level.INFO, _filePath + " was written successfully!");
 			} catch (IOException e)
 			{
 				logger.log(Level.ERROR, _filePath + " was not created! File won't be written!");
@@ -167,18 +167,15 @@ public class JSONUtil
 			return false;
 		}
 
-		final JSONObject root;
-
 		try
 		{
-			root = new JSONObject(jsonTokener);
+			@SuppressWarnings("unused")
+			final JSONObject root = new JSONObject(jsonTokener);
 		} catch (JSONException e)
 		{
 			logger.log(Level.ERROR, "Couldn't parse JSON file: \"" + jsonFile.getPath() + "\". Message: " + e.getMessage());
 			return false;
 		}
-
-		logger.log(Level.INFO, root.toString());
 
 		return true;
 	}
@@ -188,19 +185,16 @@ public class JSONUtil
 		final JSONTokener jsonTokener;
 
 		jsonTokener = new JSONTokener(json);
-
-		final JSONObject root;
-
+		
 		try
 		{
-			root = new JSONObject(jsonTokener);
+			@SuppressWarnings("unused")
+			final JSONObject root = new JSONObject(jsonTokener);
 		} catch (JSONException e)
 		{
 			logger.log(Level.ERROR, "Couldn't parse JSON: \"" + json + "\". Message: " + e.getMessage());
 			return false;
 		}
-
-		logger.log(Level.INFO, root.toString());
 
 		return true;
 	}

@@ -18,8 +18,6 @@ public class CritHitProperty extends BaseProperty<CritHitProperty.CriticalHit>
 		super(tag);
 		
 		setValue(value);
-		
-		setPropertyStruct(new CritHitPropertyStruct());
 	}
 
 	
@@ -93,6 +91,13 @@ public class CritHitProperty extends BaseProperty<CritHitProperty.CriticalHit>
 	protected CriticalHit correctValue(CriticalHit newValue)
 	{
 		return newValue;
+	}
+	
+	
+	@Override
+	public PropertyStruct getPropertyStruct()
+	{
+		return new CritHitPropertyStruct();
 	}
 
 	

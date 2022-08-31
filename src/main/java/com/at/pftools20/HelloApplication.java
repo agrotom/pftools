@@ -7,6 +7,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -25,10 +28,12 @@ public class HelloApplication extends Application
 		Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
 
 		final String iconPath = Helper.getResource("/images/icon.png");
+		
+		Logger.getLogger(HelloApplication.class).log(Level.INFO, iconPath);
 
 		if (!iconPath.equals(""))
 			stage.getIcons().add(new Image(iconPath));
-
+		
 		stage.setTitle("Pathfinder Tools");
 		stage.setScene(scene);
 		stage.show();

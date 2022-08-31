@@ -2,7 +2,10 @@ package com.at.pftools20.util;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.InputStream;
 import java.net.URL;
 
 public class Helper {
@@ -12,10 +15,7 @@ public class Helper {
      * @param resource resource path.
      * @return Resource path. Returns empty string if resource not found.
      */
-    public static String getResource(String resource) {
-        if(resource == null)
-            return "";
-
+    public static String getResource(@NotNull String resource) {
         final URL resourceURL = Helper.class.getResource(resource);
 
         if(resourceURL == null) {
@@ -24,5 +24,30 @@ public class Helper {
         }
 
         return resourceURL.toExternalForm();
+    }
+    
+    public static @Nullable URL getResourceAsURL(@NotNull String resource) {
+        final URL resourceURL = Helper.class.getResource(resource);
+
+        if(resourceURL == null)
+            logger.log(Level.WARN, "Resource \"" + resource + "\" not found!");
+
+        return resourceURL;
+    }
+    
+    public static String getResourcePath(@NotNull String resource) {
+        final URL resourceURL = Helper.class.getResource(resource);
+
+        if(resourceURL == null) {
+            logger.log(Level.WARN, "Resource \"" + resource + "\" not found!");
+            return "";
+        }
+
+        return resourceURL.getPath();
+    }
+    
+    public static @Nullable InputStream getResourceAsStream(@NotNull String resource)
+    {
+    	return Helper.class.getResourceAsStream(resource);
     }
 }

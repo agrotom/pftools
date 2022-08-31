@@ -24,14 +24,13 @@ public abstract non-sealed class BaseProperty<T> implements ImmutableProperty<T>
 	private T value;
 
 	private String tagNameFormatID;
-	private String description = "";
-	
-	private PropertyStruct propertyStruct;
+	private String descriptionFormatID;
 
 	protected BaseProperty(@NotNull String tag)
 	{
 		this.tag = tag;
 		tagNameFormatID = "property." + tag;
+		descriptionFormatID = tagNameFormatID + ".description";
 	}
 
 	
@@ -83,6 +82,11 @@ public abstract non-sealed class BaseProperty<T> implements ImmutableProperty<T>
 		return tag;
 	}
 	
+	public final String getTagNameID()
+	{
+		return tagNameFormatID;
+	}
+	
 	public final String getFormattedTag()
 	{
 		return TranslatableText.formatString(tagNameFormatID);
@@ -96,18 +100,19 @@ public abstract non-sealed class BaseProperty<T> implements ImmutableProperty<T>
 	
 	public final String getDescription()
 	{
-		return description;
+		final String formattedDescription = TranslatableText.formatString(descriptionFormatID);
+		
+		return formattedDescription.equals(descriptionFormatID) ? "" : formattedDescription;
 	}
 
 	protected abstract T correctValue(@NotNull T newValue);
 	
-	
-	protected final void setPropertyStruct(@NotNull PropertyStruct propertyStruct) { this.propertyStruct = propertyStruct; }
+
 	/**
 	 *
 	 * @return PropertyStruct of this property.
 	 */
-	public final PropertyStruct getPropertyStruct() { return propertyStruct; }
+	public abstract PropertyStruct getPropertyStruct();
 
 	/**
 	 * PropertyStruct contains control node of this property. Example: see
@@ -135,9 +140,9 @@ public abstract non-sealed class BaseProperty<T> implements ImmutableProperty<T>
 			return getThis();
 		}
 
-		public final S setDescription(@NotNull String newDescription)
+		public final S setCustomDescriptionFormatID(@NotNull String formatID)
 		{
-			description = newDescription;
+			descriptionFormatID = formatID;
 			
 			return getThis();
 		}

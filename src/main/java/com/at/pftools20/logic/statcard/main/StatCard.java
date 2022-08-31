@@ -3,84 +3,75 @@ package com.at.pftools20.logic.statcard.main;
 import com.at.pftools20.logic.enums.CardType;
 import com.at.pftools20.logic.props.main.BaseProperty;
 import com.at.pftools20.logic.props.main.StringProperty;
-import com.at.pftools20.util.json.JSONUtil;
+
+import jakarta.xml.bind.DatatypeConverter;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.WritableImage;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 public abstract class StatCard {
     protected final List<BaseProperty<?>> properties = new LinkedList<>();
 
-    public final StringProperty name = StringProperty.newBuilder("name", "No Info").setDescription("Name of card").register(properties).build();
-    public final StringProperty description = StringProperty.newBuilder("description", "No Info").setDescription("Description of card").register(properties).build();
+    public final StringProperty name = StringProperty.newBuilder("name", "No Info").register(properties).build();
+    public final StringProperty description = StringProperty.newBuilder("description", "No Info").register(properties).build();
+   
     
-    public final boolean loadCardFromFile(@NotNull File file)
+    private Image image = null;
+    
+    
+    @SuppressWarnings("exports")
+	public final void loadCardFromFile(@NotNull JSONObject main)
     {
-    	final JSONUtil jsonUtil = new JSONUtil(file);
-    	
-    	final String json = jsonUtil.read();
-    	
-    	if(json.equals(""))
-    	{
-    		logger.log(Level.WARN, "JSON parse exception!");
-    		return false;
-    	}
-    	
-    	final JSONTokener jsonTokener = new JSONTokener(json);
-    	final JSONObject root = new JSONObject(jsonTokener);
-    	
-    	final JSONObject main = root.getJSONObject("main");
-    	
-    	if(main == null)
-    	{
-    		logger.log(Level.WARN, "There is no main key in root!");
-    		return false;
-    	}
-    	
-    	final String rawCardType = root.getString("type");
-    	
-    	if(rawCardType == null)
-    	{
-    		logger.log(Level.WARN, "There is no type key in root!");
-    		return false;
-    	}
-    	
-    	final CardType cardType;
-    	
-    	try
-    	{
-    		cardType = CardType.valueOf(rawCardType);
-    	} catch(IllegalArgumentException e)
-    	{
-    		logger.log(Level.WARN, "Unknown type of card!");
-    		return false;
-    	}
-    	
-    	if(cardType != getType())
-    	{
-    		logger.log(Level.WARN, "Card type in file not match to class type!");
-    		return false;
-    	}
-    	
-    	properties.forEach(property -> {
-    		final String propTag = property.getTag();
-    		final String value = main.getString(propTag);
+    	properties.forEach(prop -> {
+    		final String value;
     		
-    		if(value == null)
-    			logger.log(Level.WARN, "Property with tag: \"" + propTag + "\" is not existing in file!");
-    		else
-				property.parseJSON(value);
+    		try
+			{
+				value = main.getString(prop.getTag());
+			} catch (JSONException e)
+			{
+				logger.log(Level.WARN, "There is no tag: \"" + prop.getTag() + "\"! Setting default value!");
+				return;
+			}
+    		
+    		prop.parseJSON(value);
     	});
     	
-    	return true;
+    	try
+		{
+    		final JSONObject imageRoot = (JSONObject) main.get("image");
+    		
+    		final int w = imageRoot.getInt("width");
+    		final int h = imageRoot.getInt("height");
+			final String imageBase64 = imageRoot.getString("raw");
+			
+			final byte[] buffer = DatatypeConverter.parseBase64Binary(imageBase64);
+			
+			final WritableImage wi = new WritableImage(w, h);
+			wi.getPixelWriter().setPixels(0, 0, w, h, PixelFormat.getByteBgraInstance(), buffer, 0, w * 4);
+			
+			image = wi;
+		} catch (JSONException e)
+		{
+			logger.log(Level.WARN, "There is not tag: \"image\"! Setting default value!");
+		} catch(ClassCastException e)
+    	{
+			logger.log(Level.WARN, "There was an error while casting classes!");
+    	} catch(IllegalArgumentException e)
+    	{
+    		logger.log(Level.WARN, "Parse method can't properly decode Base64 to byte array!");
+    	}
     }
     
     /**
@@ -94,7 +85,7 @@ public abstract class StatCard {
     	
     	root.put("main", main);
     	
-    	properties.forEach(property -> root.put(property.getTag(), property.toJSON()));
+    	properties.forEach(property -> main.put(property.getTag(), property.toJSON()));
     	
     	final CardType cardType = getType();
     	
@@ -105,6 +96,27 @@ public abstract class StatCard {
     	}
     	
     	root.put("type", cardType.toString());
+    	
+    	if(image != null)
+    	{
+    		final JSONObject imageRoot = new JSONObject();
+    		
+    		final int w = (int) image.getWidth();
+    		final int h = (int) image.getHeight();
+    		
+    		imageRoot.put("width", w);
+    		imageRoot.put("height", h);
+    		
+    		byte[] buffer = new byte[w * h * 4];
+    		
+    		image.getPixelReader().getPixels(0, 0, w, h, PixelFormat.getByteBgraInstance(), buffer, 0, w * 4);
+    		
+    		final String imageBase64 = DatatypeConverter.printBase64Binary(buffer);
+    		
+    		imageRoot.put("raw", imageBase64);
+    		
+    		main.put("image", imageRoot);
+    	}
     	
     	return root.toString();
     }
@@ -121,4 +133,21 @@ public abstract class StatCard {
     public abstract CardType getType();
     
     private final Logger logger = Logger.getLogger(StatCard.class);
+
+
+    /**
+     * 
+     * @return image of that StatCard. If there is no image for StatCard it will return null!
+     */
+	@SuppressWarnings("exports")
+	public @Nullable Image getImage()
+	{
+		return image;
+	}
+
+	@SuppressWarnings("exports")
+	public void setImage(Image image)
+	{
+		this.image = image;
+	}
 }

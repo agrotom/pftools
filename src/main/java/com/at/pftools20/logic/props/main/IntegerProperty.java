@@ -19,8 +19,6 @@ public class IntegerProperty extends BaseProperty<Integer>
 		super(tag);
 
 		setValue(value);
-
-		setPropertyStruct(new IntegerPropertyStruct());
 	}
 
 	
@@ -58,6 +56,13 @@ public class IntegerProperty extends BaseProperty<Integer>
 			return newValue;
 		else
 			return range.min;
+	}
+	
+	
+	@Override
+	public PropertyStruct getPropertyStruct()
+	{
+		return new IntegerPropertyStruct();
 	}
 
 	
