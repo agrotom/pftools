@@ -8,7 +8,7 @@ import com.at.pftools20.logic.props.main.CritHitProperty;
 import com.at.pftools20.logic.props.main.CritHitProperty.CriticalHit;
 import com.at.pftools20.logic.props.main.DiceProperty;
 import com.at.pftools20.logic.props.main.IntegerProperty;
-import com.at.pftools20.logic.props.main.IntegerProperty.Range;
+import com.at.pftools20.logic.props.main.Range;
 import com.at.pftools20.logic.props.main.TypeProperty;
 
 public class Weapon extends Item

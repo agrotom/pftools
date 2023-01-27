@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.at.pftools20.HelloApplication;
+import com.at.pftools20.App;
 import com.at.pftools20.logic.statcard.main.StatCard;
 import com.at.pftools20.logic.statcard.main.StatCardFactory;
 import com.at.pftools20.util.json.JSONUtil;
@@ -25,6 +25,8 @@ import javafx.stage.Window;
 
 public class FileManager
 {
+	public static final Image NOT_FOUND_IMAGE = new Image(ResourceHelper.getResource("/images/imagenotfound.png"));
+	
 	private static String currentPath = null;
 	private static String lastPath = null;
 	
@@ -49,7 +51,7 @@ public class FileManager
 				return;
 			
 			lastPath = currentPath = file.getPath();
-			HelloApplication.getAppCore().pushRecently(currentPath);
+			App.getAppCore().pushRecently(currentPath);
 		}
 		else
 		{
@@ -62,7 +64,7 @@ public class FileManager
 	}
 	
 	/**
-	 * 
+	 * Shows window to pick stat card file.
 	 * @param ownerWindow Uses to properly call file chooser.
 	 * @return Baked statCard. Returns null if method can't open StatCard by given path.
 	 */
@@ -97,12 +99,16 @@ public class FileManager
 		if(statCard != null)
 		{
 			lastPath = currentPath = file.getPath();
-			HelloApplication.getAppCore().pushRecently(currentPath);
+			App.getAppCore().pushRecently(currentPath);
 		}
 		
 		return statCard;
 	}
 	
+	/**
+	 * Shows window to pick stat card file.
+	 * @param path File's path
+	 */
 	public @Nullable StatCard openStatCard(@NotNull String path)
 	{
 		final File file = new File(path);
@@ -129,7 +135,7 @@ public class FileManager
 		if(statCard != null)
 		{
 			lastPath = currentPath = file.getPath();
-			HelloApplication.getAppCore().pushRecently(currentPath);
+			App.getAppCore().pushRecently(currentPath);
 		}
 		
 		return statCard;
@@ -221,7 +227,7 @@ public class FileManager
 	private FileChooser createNewChooser()
 	{
 		final FileChooser fileChooser = new FileChooser();
-		final Path assetPath = Path.of(HelloApplication.getAppCore().getPreferences().assetPath.getValue());
+		final Path assetPath = Path.of(App.getAppCore().getPreferences().assetPath.getValue());
 		
 		fileChooser.getExtensionFilters().add(new ExtensionFilter("JSON", "*.json"));
 		
@@ -237,7 +243,7 @@ public class FileManager
 	{
 		final FileChooser fileChooser = createNewImageChooser();
 		
-		final File imageFile = fileChooser.showOpenDialog(HelloApplication.getAppCore().getMainStage());
+		final File imageFile = fileChooser.showOpenDialog(App.getAppCore().getMainStage());
 		
 		if(imageFile == null)
 			return null;

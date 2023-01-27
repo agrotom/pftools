@@ -4,7 +4,7 @@ public class Main
 {
 
 	public static void main(final String[] args) {
-        HelloApplication.main(args);
+        App.main(args);
     }
 
 }

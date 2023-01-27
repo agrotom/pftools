@@ -18,7 +18,7 @@ public class StatCardFactory
 	{
 		final JSONObject root;
 		
-		try
+		try // Getting a card as JSON representation
 		{
 			root = new JSONObject(new JSONTokener(json));
 		} catch (JSONException e)
@@ -29,7 +29,7 @@ public class StatCardFactory
 		
 		final String rawCardType;
 		
-		try
+		try // Get type of a parsed card
 		{
 			rawCardType = root.getString("type");
 		} catch (JSONException e)
@@ -40,7 +40,7 @@ public class StatCardFactory
 		
 		final CardType cardType;
 		
-		try
+		try // Validating a card type
 		{
 			cardType = CardType.valueOf(rawCardType);
 		} catch (IllegalArgumentException e)
@@ -51,7 +51,7 @@ public class StatCardFactory
 		
 		final JSONObject main;
 		
-		try
+		try // Getting a main info about card as JSON representation
 		{
 			main = root.getJSONObject("main");
 		} catch (JSONException e)
@@ -60,14 +60,19 @@ public class StatCardFactory
 			return null;
 		}
 		
-		final StatCard statCard = createPure(cardType);
+		final StatCard statCard = createPure(cardType); // Creating a pure card
 		
 		if(statCard != null)
-			statCard.loadCardFromFile(main);
+			statCard.parseCardFromJSON(main); // Parsing JSON if it's valid
 		
 		return statCard;
 	}
 
+	/**
+	 * Creates pure card by given type.
+	 * @param cardType
+	 * @return Baked StatCard. If given type is null, method will return null!
+	 */
 	public @Nullable StatCard createPure(@NotNull CardType cardType)
 	{
 		switch(cardType)
@@ -86,7 +91,6 @@ public class StatCardFactory
 			return new Weapon();
 		default:
 			return null;
-		
 		}
 	}
 }

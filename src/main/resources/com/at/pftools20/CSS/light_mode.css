@@ -87,3 +87,39 @@
     -fx-body-color: -windows-control-hover-color;
     -fx-border-color: -windows-menubar-hover-color;
 }
+
+.titled-pane > .title 
+{
+    -fx-background-radius: 0%;
+    -fx-background-color: rgb(230, 230, 230);
+    -fx-border-color: -windows-all-border-color;
+}
+
+.titled-pane > *.content 
+{
+    -fx-background-radius: 0%;
+ }
+
+ .split-pane:horizontal > .split-pane-divider {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0.1em 0 0.1em;
+ }
+ .split-pane:vertical > .split-pane-divider {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0.1em 0 0.1em;
+ }
+ .main-root {
+    -fx-background: -windows-control-color;
+    -fx-text-fill: rgb(165, 32, 32);
+    -fx-background-color: -windows-control-color;
+    -fx-background-radius: 6px;
+    -fx-background-insets: 0;
+    -fx-padding: 0.667em 0.75em 0.667em 0.75em; /* 10px */
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 10, 0.0 , 0 , 3 );
+    -fx-font-size: 0.85em;
+}
+
+.tooltip {
+    -fx-background-radius: 0 0 0 0;
+    -fx-background: -windows-control-color;
+}

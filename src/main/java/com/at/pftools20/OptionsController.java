@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -30,9 +31,14 @@ public class OptionsController
 	private VBox prefData;
 	
 	@FXML
+	private Button applyButton;
+	
+	@FXML
 	private void initialize()
 	{
-		HelloApplication.getAppCore().getPreferences().getNewList().forEach(pref -> {
+		applyButton.setText(TranslatableText.formatString("options.apply"));
+		
+		App.getAppCore().getPreferences().getNewList().forEach(pref -> {
 			final Label label = new Label(pref.getFormattedTag());
 			
 			final HBox row = new HBox(label);
@@ -58,7 +64,7 @@ public class OptionsController
 	@FXML
 	private void applyChanges()
 	{
-		HelloApplication.getAppCore().saveCoreData();
+		App.getAppCore().saveCoreData();
 	}
 
 	@SuppressWarnings("exports")
@@ -66,7 +72,7 @@ public class OptionsController
 	{
 		final Stage stage = new Stage();
 		
-		final FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("options.fxml"));
+		final FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("options.fxml"));
 		final Scene scene = new Scene(fxmlLoader.load(), 600, 400);
 		
 		stage.setTitle(TranslatableText.formatString("settings.title"));

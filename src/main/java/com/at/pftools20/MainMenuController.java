@@ -14,7 +14,7 @@ import com.at.pftools20.logic.enums.CardType;
 import com.at.pftools20.logic.statcard.main.StatCard;
 import com.at.pftools20.logic.statcard.main.StatCardFactory;
 import com.at.pftools20.util.FileManager;
-import com.at.pftools20.util.Helper;
+import com.at.pftools20.util.ResourceHelper;
 import com.at.pftools20.util.TranslatableText;
 
 import javafx.animation.FadeTransition;
@@ -120,8 +120,6 @@ public class MainMenuController
 	{
 		translateAll();
 		
-		panesInit();
-		
 		updateRecently();
 		
 		resetPanes();
@@ -142,7 +140,7 @@ public class MainMenuController
 		});
 		
 		final BackgroundFill backgroundFill = new BackgroundFill(
-				new ImagePattern(new Image(Helper.getResource("/images/background.png"))), CornerRadii.EMPTY, Insets.EMPTY);
+				new ImagePattern(new Image(ResourceHelper.getResource("/images/background.png"))), CornerRadii.EMPTY, Insets.EMPTY);
 		
 		mainPane.setBackground(new Background(backgroundFill));
 	}
@@ -173,7 +171,7 @@ public class MainMenuController
 	{
 		openRecentlyMenu.getItems().clear();
 		
-		HelloApplication.getAppCore().getRecentlies().forEach(recently -> {
+		App.getAppCore().getRecentlies().forEach(recently -> {
 			final MenuItem menuItem = new MenuItem(FilenameUtils.getName(recently));
 			
 			menuItem.setOnAction(event -> {
@@ -193,6 +191,8 @@ public class MainMenuController
 		});
 	}
 	
+	@SuppressWarnings("unused")
+	@Deprecated
 	private void panesInit()
 	{
 		final List<FadeTransition> effects = new ArrayList<>();
@@ -233,7 +233,7 @@ public class MainMenuController
 		
 		if(statCard != null)
 		{
-			manager.save(statCard, HelloApplication.getAppCore().getMainStage(), false);
+			manager.save(statCard, App.getAppCore().getMainStage(), false);
 			
 			updateRecently();
 		}
@@ -246,7 +246,7 @@ public class MainMenuController
 		
 		if(statCard != null)
 		{
-			manager.save(statCard, HelloApplication.getAppCore().getMainStage(), true);
+			manager.save(statCard, App.getAppCore().getMainStage(), true);
 			saveMenuItem.setDisable(false);
 			
 			updateRecently();
@@ -258,7 +258,7 @@ public class MainMenuController
 	{
 		final FileManager manager = new FileManager();
 		
-		statCard = manager.openStatCard(HelloApplication.getAppCore().getMainStage());
+		statCard = manager.openStatCard(App.getAppCore().getMainStage());
 		
 		if(statCard != null)
 		{
@@ -273,7 +273,7 @@ public class MainMenuController
 	{
 		try
 		{
-			OptionsController.start(HelloApplication.getAppCore().getMainStage());
+			OptionsController.start(App.getAppCore().getMainStage());
 		} catch (IOException e)
 		{
 			logger.log(Level.ERROR, "Can't load settings menu!");
@@ -309,7 +309,7 @@ public class MainMenuController
 		
 		final Image currentCardImage = card.getImage();
 		
-		statCardImage.setImage(currentCardImage == null ? new Image(Helper.getResource("/images/imagenotfound.png")) : currentCardImage);
+		statCardImage.setImage(currentCardImage == null ? FileManager.NOT_FOUND_IMAGE : currentCardImage);
 	}
 	
 	private void resetPanes()
@@ -381,6 +381,18 @@ public class MainMenuController
 				statCard.setImage(newImage);
 				statCardImage.setImage(newImage);
 			}
+		}
+	}
+	
+	@FXML
+	private void createGame()
+	{
+		try
+		{
+			GameController.start(App.getAppCore().getMainStage());
+		} catch (IOException e)
+		{
+			logger.log(Level.ERROR, "Can't load game menu!");
 		}
 	}
 	

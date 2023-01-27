@@ -2,6 +2,7 @@ package com.at.pftools20.logic.statcard.main;
 
 import com.at.pftools20.logic.enums.CardType;
 import com.at.pftools20.logic.props.main.BaseProperty;
+import com.at.pftools20.logic.props.main.ImmutableProperty;
 import com.at.pftools20.logic.props.main.StringProperty;
 
 import jakarta.xml.bind.DatatypeConverter;
@@ -23,15 +24,15 @@ import org.json.JSONObject;
 public abstract class StatCard {
     protected final List<BaseProperty<?>> properties = new LinkedList<>();
 
-    public final StringProperty name = StringProperty.newBuilder("name", "No Info").register(properties).build();
-    public final StringProperty description = StringProperty.newBuilder("description", "No Info").register(properties).build();
+    public final ImmutableProperty<String> name = StringProperty.newBuilder("name", "No Info").register(properties).build();
+    public final ImmutableProperty<String> description = StringProperty.newBuilder("description", "No Info").register(properties).build();
    
     
     private Image image = null;
     
     
     @SuppressWarnings("exports")
-	public final void loadCardFromFile(@NotNull JSONObject main)
+	public final void parseCardFromJSON(@NotNull JSONObject main)
     {
     	properties.forEach(prop -> {
     		final String value;
@@ -62,9 +63,8 @@ public abstract class StatCard {
 			wi.getPixelWriter().setPixels(0, 0, w, h, PixelFormat.getByteBgraInstance(), buffer, 0, w * 4);
 			
 			image = wi;
-		} catch (JSONException e)
+		} catch (JSONException ignore)
 		{
-			logger.log(Level.WARN, "There is not tag: \"image\"! Setting default value!");
 		} catch(ClassCastException e)
     	{
 			logger.log(Level.WARN, "There was an error while casting classes!");

@@ -1,7 +1,7 @@
 package com.at.pftools20;
 
 import com.at.pftools20.core.Core;
-import com.at.pftools20.util.Helper;
+import com.at.pftools20.util.ResourceHelper;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class HelloApplication extends Application
+public class App extends Application
 {
 	private static Core core;
 	
@@ -24,12 +24,12 @@ public class HelloApplication extends Application
 	{
 		core = new Core(stage);
 		
-		FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("main-menu.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("main-menu.fxml"));
 		Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
 
-		final String iconPath = Helper.getResource("/images/icon.png");
+		final String iconPath = ResourceHelper.getResource("/images/icon.png");
 		
-		Logger.getLogger(HelloApplication.class).log(Level.INFO, iconPath);
+		Logger.getLogger(App.class).log(Level.INFO, iconPath);
 
 		if (!iconPath.equals(""))
 			stage.getIcons().add(new Image(iconPath));

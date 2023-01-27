@@ -8,15 +8,15 @@ import org.jetbrains.annotations.Nullable;
 import java.io.InputStream;
 import java.net.URL;
 
-public class Helper {
-    private static final Logger logger = Logger.getLogger(Helper.class);
+public class ResourceHelper {
+    private static final Logger logger = Logger.getLogger(ResourceHelper.class);
 
     /**
      * @param resource resource path.
      * @return Resource path. Returns empty string if resource not found.
      */
     public static String getResource(@NotNull String resource) {
-        final URL resourceURL = Helper.class.getResource(resource);
+        final URL resourceURL = ResourceHelper.class.getResource(resource);
 
         if(resourceURL == null) {
             logger.log(Level.WARN, "Resource \"" + resource + "\" not found!");
@@ -27,7 +27,7 @@ public class Helper {
     }
     
     public static @Nullable URL getResourceAsURL(@NotNull String resource) {
-        final URL resourceURL = Helper.class.getResource(resource);
+        final URL resourceURL = ResourceHelper.class.getResource(resource);
 
         if(resourceURL == null)
             logger.log(Level.WARN, "Resource \"" + resource + "\" not found!");
@@ -36,7 +36,7 @@ public class Helper {
     }
     
     public static String getResourcePath(@NotNull String resource) {
-        final URL resourceURL = Helper.class.getResource(resource);
+        final URL resourceURL = ResourceHelper.class.getResource(resource);
 
         if(resourceURL == null) {
             logger.log(Level.WARN, "Resource \"" + resource + "\" not found!");
@@ -48,6 +48,6 @@ public class Helper {
     
     public static @Nullable InputStream getResourceAsStream(@NotNull String resource)
     {
-    	return Helper.class.getResourceAsStream(resource);
+    	return ResourceHelper.class.getResourceAsStream(resource);
     }
 }

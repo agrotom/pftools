@@ -12,7 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import com.at.pftools20.HelloApplication;
+import com.at.pftools20.App;
 
 public class TranslatableText
 {
@@ -20,7 +20,7 @@ public class TranslatableText
 	
 	private static final JSONObject defaultLangJSON = getLangJSON("/lang/en.json");
 	private static final JSONObject langJSON = getLangJSON("/lang/"
-			+ HelloApplication.getAppCore().getPreferences().language.toString() + ".json");
+			+ App.getAppCore().getPreferences().language.toString() + ".json");
 	
 	/**
 	 * 
@@ -40,7 +40,7 @@ public class TranslatableText
 			} catch (Exception e)
 			{
 				logger.log(Level.WARN, "There is no localization for: \"" + rawString + "\" in \""
-						+ HelloApplication.getAppCore().getPreferences().language.toString() + ".json\" language file! "
+						+ App.getAppCore().getPreferences().language.toString() + ".json\" language file! "
 						+ "Try to find it in default language file!");
 			}
 			
@@ -99,7 +99,7 @@ public class TranslatableText
 		
 		return new JSONObject(new JSONTokener(rawJSON));*/
 		
-		final InputStream langFileStream = Helper.getResourceAsStream(resourcePath);
+		final InputStream langFileStream = ResourceHelper.getResourceAsStream(resourcePath);
 		
 		if(langFileStream == null)
 		{

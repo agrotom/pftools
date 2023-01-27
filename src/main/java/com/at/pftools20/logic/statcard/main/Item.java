@@ -2,7 +2,7 @@ package com.at.pftools20.logic.statcard.main;
 
 import com.at.pftools20.logic.enums.CardType;
 import com.at.pftools20.logic.props.main.IntegerProperty;
-import com.at.pftools20.logic.props.main.IntegerProperty.Range;
+import com.at.pftools20.logic.props.main.Range;
 
 public class Item extends StatCard
 {

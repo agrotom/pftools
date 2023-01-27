@@ -25,7 +25,7 @@
       </VBox>
    </center>
    <right>
-      <Button mnemonicParsing="false" onAction="#applyChanges" text="Apply" BorderPane.alignment="CENTER">
+      <Button fx:id="applyButton" mnemonicParsing="false" onAction="#applyChanges" text="Apply" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets right="5.0" />
          </BorderPane.margin>

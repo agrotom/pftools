@@ -16,17 +16,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import com.at.pftools20.HelloApplication;
+import com.at.pftools20.App;
 import com.at.pftools20.logic.enums.CardType;
 import com.at.pftools20.logic.statcard.main.StatCard;
 import com.at.pftools20.logic.statcard.main.StatCardFactory;
 import com.at.pftools20.util.FileManager;
-import com.at.pftools20.util.Helper;
+import com.at.pftools20.util.ResourceHelper;
 import com.at.pftools20.util.TranslatableText;
 import com.at.pftools20.util.json.JSONUtil;
 
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -44,17 +42,19 @@ import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class ListProperty extends BaseProperty<List<ListProperty.CardHolder>>
+public class ListProperty extends BaseProperty<List<CardHolder>>
 {
 	private CardType type = null;
 	
-	protected ListProperty(@NotNull String tag, @NotNull List<ListProperty.CardHolder> value)
+	protected ListProperty(@NotNull String tag, @NotNull List<CardHolder> value)
 	{
 		super(tag);
 		
@@ -68,7 +68,7 @@ public class ListProperty extends BaseProperty<List<ListProperty.CardHolder>>
 		final List<CardHolder> value = getValue();
 		
 		value.forEach(item -> {
-			builder.append(item.name + ", ");
+			builder.append(item.getName() + ", ");
 		});
 		
 		if(value.size() > 0)
@@ -108,7 +108,7 @@ public class ListProperty extends BaseProperty<List<ListProperty.CardHolder>>
 				holder = (JSONObject) rawHolder;
 			} catch (ClassCastException e)
 			{
-				logger.log(Level.ERROR, "Can't cast one of items from List Property array to JSONObject! Skipping that item!");
+				logger.log(Level.ERROR, "Can't cast one of items from List Property array to JSONObject! Skipping the item!");
 				return;
 			}
 			
@@ -119,10 +119,10 @@ public class ListProperty extends BaseProperty<List<ListProperty.CardHolder>>
 			{
 				count = holder.getInt("count");
 				name = holder.getString("name");
-				path = holder.getString("path");
+				path = holder.getString("cardPath");
 			} catch (JSONException e)
 			{
-				logger.log(Level.ERROR, "Can't get one of key of Card Holder from JSON value! Skipping that item!");
+				logger.log(Level.ERROR, "Can't get one of key of Card Holder from JSON value! Skipping the item!");
 				return;
 			}
 			
@@ -158,6 +158,8 @@ public class ListProperty extends BaseProperty<List<ListProperty.CardHolder>>
 		value.forEach(holder -> {
 			root.put(holder.createJSONArray());
 		});
+		
+		//logger.log(Level.INFO, root.toString());
 		
 		return root.toString();
 	}
@@ -215,10 +217,10 @@ public class ListProperty extends BaseProperty<List<ListProperty.CardHolder>>
 		private void init()
 		{
 			// Stage initialize
-			stage.getIcons().setAll(HelloApplication.getAppCore().getMainStage().getIcons());
+			stage.getIcons().setAll(App.getAppCore().getMainStage().getIcons());
 			
 			// Scene initialize
-			scene.getStylesheets().add(Helper.getResource("/com/at/pftools20/CSS/light_mode.css"));
+			scene.getStylesheets().add(ResourceHelper.getResource("/com/at/pftools20/CSS/light_mode.css"));
 			
 			// Root initialize
 			root.setOrientation(Orientation.VERTICAL);
@@ -243,6 +245,8 @@ public class ListProperty extends BaseProperty<List<ListProperty.CardHolder>>
 			allItems.getColumns().add(countC);
 			allItems.getColumns().add(nameC);
 			allItems.getColumns().add(pathC);
+			
+			allItems.setOnMouseClicked(this::onRightClicked);
 			
 			countC.setCellValueFactory(new PropertyValueFactory<>("count"));
 			nameC.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -286,7 +290,7 @@ public class ListProperty extends BaseProperty<List<ListProperty.CardHolder>>
 		{
 			assetMenu.getChildren().clear();
 			
-			final String assetPath = HelloApplication.getAppCore().getPreferences().assetPath.getValue();
+			final String assetPath = App.getAppCore().getPreferences().assetPath.getValue();
 			
 			if(assetPath != null && Files.exists(Path.of(assetPath)) && Files.isDirectory(Path.of(assetPath)))
 			{
@@ -316,13 +320,13 @@ public class ListProperty extends BaseProperty<List<ListProperty.CardHolder>>
 					}
 					
 					for(final CardHolder i : getValue())
-						if(i.name.get().equals(card.name.getValue()))
+						if(i.getName().equals(card.name.getValue()))
 							return;
 					
 					final Label assetName = new Label(card.name.getValue());
 					
 					final Image assetImage = card.getImage();
-					final Image plugImage = new Image(Helper.getResource("/images/imagenotfound.png"));
+					final Image plugImage = new Image(ResourceHelper.getResource("/images/imagenotfound.png"));
 					
 					final ImageView assetImageView = new ImageView(
 							assetImage != null ? assetImage : plugImage
@@ -346,11 +350,36 @@ public class ListProperty extends BaseProperty<List<ListProperty.CardHolder>>
 			}
 		}
 		
+		private void onRightClicked(@NotNull MouseEvent event)
+		{
+			
+			if(event.getButton().equals(MouseButton.SECONDARY))
+			{
+				final CardHolder selectedCard = allItems.getSelectionModel().getSelectedItem();
+				
+				if(selectedCard != null)
+					removeItem(selectedCard);
+				
+				sync();
+				updateAssetMenu();
+			}
+		}
+		
+		private void removeItem(@NotNull CardHolder card)
+		{
+			final List<CardHolder> value = getValue();
+
+			value.remove(card);
+			sync();
+			
+			updateAssetMenu();
+		}
+		
 		private void onAddButtonClick(@NotNull ActionEvent event)
 		{
 			final FileManager manager = new FileManager();
 			
-			final StatCard card = manager.openSilentStatCard(HelloApplication.getAppCore().getMainStage());
+			final StatCard card = manager.openSilentStatCard(App.getAppCore().getMainStage());
 			
 			if(card != null)
 				addItem(card.name.getValue(), FileManager.getLastPath());
@@ -358,7 +387,6 @@ public class ListProperty extends BaseProperty<List<ListProperty.CardHolder>>
 		
 		private void addItem(@NotNull String name, @NotNull String path)
 		{
-			@SuppressWarnings("unused")
 			final List<CardHolder> value = getValue();
 			
 			int count = 1;
@@ -367,7 +395,7 @@ public class ListProperty extends BaseProperty<List<ListProperty.CardHolder>>
 				count = Integer.parseInt(countTextField.getText());
 			} catch (NumberFormatException ignore) {}
 			
-			getValue().add(new CardHolder(count, name, path));
+			value.add(new CardHolder(count, name, path));
 			sync();
 			
 			updateAssetMenu();
@@ -419,57 +447,5 @@ public class ListProperty extends BaseProperty<List<ListProperty.CardHolder>>
 
 	public static ListPropBuilder newBuilder(@NotNull String tag, @NotNull List<CardHolder> value) { return new ListProperty(tag, value).new ListPropBuilder(); }
 
-	public static class CardHolder
-	{
-		private final SimpleIntegerProperty count;
-		private final SimpleStringProperty name;
-		private final SimpleStringProperty path;
-		
-		public CardHolder(int count, @NotNull String name, @NotNull String path)
-		{
-			this.count = new javafx.beans.property.SimpleIntegerProperty(count);
-			this.name = new javafx.beans.property.SimpleStringProperty(name);
-			this.path = new javafx.beans.property.SimpleStringProperty(path);
-		}
-		
-		private JSONObject createJSONArray()
-		{
-			final JSONObject root = new JSONObject();
-			
-			root.put("count", count.get());
-			root.put("name", name.get());
-			root.put("cardPath", path.get());
-			
-			return root;
-		}
-
-		public int getCount()
-		{
-			return count.get();
-		}
-
-		public String getName()
-		{
-			return name.get();
-		}
-
-		public String getPath()
-		{
-			return path.get();
-		}
-		
-		@Override
-		public boolean equals(Object obj)
-		{
-			if(obj == null)
-				return false;
-			
-			if(!(obj instanceof CardHolder))
-				return false;
-			
-			final CardHolder toCompare = (CardHolder) obj;
-			
-			return this.count == toCompare.count && this.name == toCompare.name && this.path == toCompare.path;
-		}
-	}
+	
 }

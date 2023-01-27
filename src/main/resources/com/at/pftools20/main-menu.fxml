@@ -7,13 +7,13 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@CSS/light_mode.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.at.pftools20.MainMenuController">
+<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@CSS/light_mode.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.at.pftools20.MainMenuController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -31,7 +31,7 @@
           </Menu>
             <Menu fx:id="gameMenu" mnemonicParsing="false" text="Game">
               <items>
-                  <MenuItem fx:id="newGameMenuItem" mnemonicParsing="false" text="New" />
+                  <MenuItem fx:id="newGameMenuItem" mnemonicParsing="false" onAction="#createGame" text="New" />
                 <MenuItem fx:id="openGameMenuItem" mnemonicParsing="false" text="Open" />
               </items>
             </Menu>
@@ -48,32 +48,28 @@
         </menus>
       </MenuBar>
    </top>
-   <left>
-      <VBox prefHeight="695.0" prefWidth="327.0" BorderPane.alignment="CENTER">
-         <children>
-            <TitledPane fx:id="titledPane1" animated="false" text="All Properties">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <ScrollPane layoutX="-2.0" layoutY="-1.0" prefHeight="184.0" prefWidth="328.0">
+   <center>
+      <SplitPane dividerPositions="0.3489827856025039" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <items>
+            <SplitPane dividerPositions="0.09668109668109669" orientation="VERTICAL">
+               <items>
+                  <TitledPane fx:id="titledPane1" animated="false" maxWidth="1.7976931348623157E308" text="All Properties">
+                    <content>
+                        <ScrollPane>
                            <content>
-                              <VBox fx:id="allPropsPane" prefHeight="181.0" prefWidth="326.0" spacing="5.0" />
+                              <VBox fx:id="allPropsPane" spacing="5.0" />
                            </content>
                         </ScrollPane>
-                     </children>
-                  </AnchorPane>
-              </content>
-            </TitledPane>
-            <TitledPane fx:id="titledPane2" animated="false" text="Card Info">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <ScrollPane prefHeight="181.0" prefWidth="326.0">
+                    </content>
+                  </TitledPane>
+                  <TitledPane fx:id="titledPane2" animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Card Info">
+                    <content>
+                        <ScrollPane>
                            <content>
-                              <VBox fx:id="infoVBox" prefHeight="179.0" prefWidth="324.0" spacing="10.0">
+                              <VBox fx:id="infoVBox" spacing="10.0">
                                  <children>
                                     <Label fx:id="statCardName" text="Name" />
-                                    <ImageView fx:id="statCardImage" fitHeight="157.0" fitWidth="313.0" onMouseClicked="#uploadImage" pickOnBounds="true" preserveRatio="true" />
+                                    <ImageView fx:id="statCardImage" fitHeight="128.0" fitWidth="256.0" onMouseClicked="#uploadImage" pickOnBounds="true" preserveRatio="true" />
                                  </children>
                                  <padding>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -81,26 +77,16 @@
                               </VBox>
                            </content>
                         </ScrollPane>
-                     </children>
-                  </AnchorPane>
-              </content>
-            </TitledPane>
-         </children>
-      </VBox>
-   </left>
-   <right>
-      <VBox prefHeight="695.0" prefWidth="301.0" BorderPane.alignment="CENTER">
-         <children>
-            <TitledPane fx:id="titledPane3" alignment="TOP_RIGHT" animated="false" text="Property Data">
+                    </content>
+                  </TitledPane>
+               </items>
+            </SplitPane>
+            <TitledPane fx:id="titledPane3" alignment="TOP_RIGHT" animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Property Data">
               <content>
-                <AnchorPane maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="312.0" prefWidth="299.0">
-                     <children>
-                        <VBox fx:id="propertyDataVBox" alignment="TOP_CENTER" layoutX="1.0" layoutY="1.0" maxWidth="-Infinity" prefHeight="310.0" prefWidth="297.0" />
-                     </children>
-                  </AnchorPane>
+                  <VBox fx:id="propertyDataVBox" alignment="TOP_CENTER" />
               </content>
             </TitledPane>
-         </children>
-      </VBox>
-   </right>
+         </items>
+      </SplitPane>
+   </center>
 </BorderPane>

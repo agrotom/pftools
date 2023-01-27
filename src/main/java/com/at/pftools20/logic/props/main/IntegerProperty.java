@@ -32,7 +32,7 @@ public class IntegerProperty extends BaseProperty<Integer>
 		{
 			logger.log(Level.WARN,
 					"Parse argument doesn't contain a parsable string. Setting value to range minimum value!");
-			setValue(range.min);
+			setValue(range.getMin());
 		}
 	}
 
@@ -55,7 +55,7 @@ public class IntegerProperty extends BaseProperty<Integer>
 		if (range.forward(newValue))
 			return newValue;
 		else
-			return range.min;
+			return range.getMin();
 	}
 	
 	
@@ -64,46 +64,6 @@ public class IntegerProperty extends BaseProperty<Integer>
 	{
 		return new IntegerPropertyStruct();
 	}
-
-	
-	/**
-	 * It is a simple class, that provide Range functional. Range model: [minimum; maximum].
-	 */
-	public static class Range
-	{
-		private final int max;
-		private final int min;
-
-		public static final Range DEFAULT_INT = new Range(Integer.MIN_VALUE, Integer.MAX_VALUE);
-		public static final Range UNSIGNED_INT = new Range(0, Integer.MAX_VALUE);
-		public static final Range UNSIGNED_INT_ZERO = new Range(1, Integer.MAX_VALUE);
-
-		/**
-		 * @param min Min value
-		 * @param max Max value
-		 */
-		public Range(int min, int max)
-		{
-			this.max = max;
-			this.min = min;
-		}
-
-		public boolean forward(int num)
-		{
-			return num >= min && num <= max;
-		}
-
-		public int getMax()
-		{
-			return max;
-		}
-
-		public int getMin()
-		{
-			return min;
-		}
-	}
-
 	
 	private class IntegerPropertyStruct implements PropertyStruct
 	{

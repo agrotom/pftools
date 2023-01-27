@@ -12,7 +12,7 @@ import java.util.List;
  * BaseProperty contains base for other properties. If any class inherits from
  * {@link BaseProperty} it should represent this structure: {@link JSONAble}
  * implemented methods, {@link BaseProperty#correctValue(T newValue)}
- * implementation, PropertyStruct and its own builder. Properties using for
+ * implementation, PropertyStruct and its own builder. Properties uses for
  * StatCard specification. It implements {@link JSONAble} for converting
  * properties to JSON format.
  * 
@@ -163,5 +163,5 @@ public abstract non-sealed class BaseProperty<T> implements ImmutableProperty<T>
 		public abstract K build();
 	}
 
-	protected final Logger logger = Logger.getLogger(BaseProperty.class);
+	protected final Logger logger = Logger.getLogger(this.getClass());
 }

@@ -14,6 +14,8 @@ import java.util.function.UnaryOperator;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import com.at.pftools20.util.TranslatableText;
+
 public class StringProperty extends BaseProperty<String>
 {
 	private int maxLength = -1;
@@ -71,7 +73,7 @@ public class StringProperty extends BaseProperty<String>
 		private final TextField textField = new TextField(getValue());
 		private final TextArea expandedTextField = new TextArea(getValue());
 
-		private final Button expandButton = new Button("Expand");
+		private final Button expandButton = new Button(TranslatableText.formatString("stringproperty.expandbutton"));
 
 		private final HBox root = new HBox(textField, expandButton);
 
