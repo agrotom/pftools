@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@CSS/light_mode.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.at.pftools20.MainMenuController">
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
+            <items>
+                  <Menu fx:id="newMenuItem" mnemonicParsing="false" text="New" />
+                  <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openAction" text="Open" />
+                  <Menu fx:id="openRecentlyMenu" mnemonicParsing="false" text="Open Recently" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="saveMenuItem" disable="true" mnemonicParsing="false" onAction="#saveAction" text="Save" />
+                  <MenuItem fx:id="saveAsMenuItem" disable="true" mnemonicParsing="false" onAction="#saveAsAction" text="Save As..." />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem fx:id="closeMenuItem" disable="true" mnemonicParsing="false" onAction="#closeAction" text="Close" />
+            </items>
+          </Menu>
+            <Menu fx:id="gameMenu" mnemonicParsing="false" text="Game">
+              <items>
+                  <MenuItem fx:id="newGameMenuItem" mnemonicParsing="false" onAction="#createGame" text="New" />
+                <MenuItem fx:id="openGameMenuItem" mnemonicParsing="false" text="Open" />
+              </items>
+            </Menu>
+            <Menu fx:id="optionsMenu" mnemonicParsing="false" text="Options">
+              <items>
+                <MenuItem fx:id="openSettingsMenuItem" mnemonicParsing="false" onAction="#onSettingsAction" text="Open Settings" />
+              </items>
+            </Menu>
+            <Menu fx:id="helpMenu" mnemonicParsing="false" text="Help">
+              <items>
+                <MenuItem fx:id="helpMenuItem" mnemonicParsing="false" text="Help" />
+              </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <SplitPane dividerPositions="0.3489827856025039" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <items>
+            <SplitPane dividerPositions="0.09668109668109669" orientation="VERTICAL">
+               <items>
+                  <TitledPane fx:id="titledPane1" animated="false" maxWidth="1.7976931348623157E308" text="All Properties">
+                    <content>
+                        <ScrollPane>
+                           <content>
+                              <VBox fx:id="allPropsPane" spacing="5.0" />
+                           </content>
+                        </ScrollPane>
+                    </content>
+                  </TitledPane>
+                  <TitledPane fx:id="titledPane2" animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Card Info">
+                    <content>
+                        <ScrollPane>
+                           <content>
+                              <VBox fx:id="infoVBox" spacing="10.0">
+                                 <children>
+                                    <Label fx:id="statCardName" text="Name" />
+                                    <ImageView fx:id="statCardImage" fitHeight="128.0" fitWidth="256.0" onMouseClicked="#uploadImage" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </VBox>
+                           </content>
+                        </ScrollPane>
+                    </content>
+                  </TitledPane>
+               </items>
+            </SplitPane>
+            <TitledPane fx:id="titledPane3" alignment="TOP_RIGHT" animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Property Data">
+              <content>
+                  <VBox fx:id="propertyDataVBox" alignment="TOP_CENTER" />
+              </content>
+            </TitledPane>
+         </items>
+      </SplitPane>
+   </center>
+</BorderPane>
